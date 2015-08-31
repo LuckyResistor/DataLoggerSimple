@@ -24,7 +24,7 @@
 
 
 Application::Application()
-    : dht(3, DHT22), rtc(), modeSelector(), storage(), logSystem(0, &storage)
+    : dht(3), rtc(), modeSelector(), storage(), logSystem(0, &storage)
 {
 }
 
@@ -212,11 +212,15 @@ void Application::setup()
 void Application::loop()
 {
     // Read the values from the sensor
-    const float humidity = dht.readHumidity();
-    const float temperature = dht.readTemperature();
+    DHT22::Measurement measurement = dht.readTemperatureAndHumidity();
+    
+    // Check for read errors from the sensor.
+    if (measurement.humidity == NAN || measurement.temperature == NAN) {
+        signalError(6);
+    }
     
     // Write the record
-    LogRecord logRecord(_currentTime, temperature, humidity);
+    LogRecord logRecord(_currentTime, measurement.temperature, measurement.humidity);
     if (!logSystem.appendRecord(logRecord)) {
         // storage is full
         signalError(5);
@@ -224,9 +228,9 @@ void Application::loop()
 
 #ifdef LR_APPLICATION_DEBUG
     Serial.print(F("Write log: t:"));
-    Serial.print(temperature);
+    Serial.print(measurement.temperature);
     Serial.print(F("C h:"));
-    Serial.print(humidity);
+    Serial.print(measurement.humidity);
     Serial.print(F("% time:"));
     sendDateTimeToSerial(_currentTime);
     Serial.println();

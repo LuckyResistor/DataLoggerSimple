@@ -25,7 +25,6 @@
 #include <Wire.h>
 
 // Include additional libraries
-#include <DHT.h>
 #include <RTClib.h>
 #include <RTC_DS1307.h>
 
@@ -36,6 +35,7 @@
 #include "Storage.h"
 #include "LogSystem.h"
 #include "ModeSelector.h"
+#include "DHT22.h"
 
 
 // The pin for the signal LED
@@ -87,7 +87,7 @@ private:
     void powerSave(uint16_t seconds);
     
 private:
-    DHT dht;
+    DHT22 dht;
     RTC_DS1307 rtc;
     ModeSelector modeSelector;
     Storage storage;
