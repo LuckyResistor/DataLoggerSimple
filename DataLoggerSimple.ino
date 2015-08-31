@@ -21,7 +21,6 @@
 
 // All used libraries.
 #include <Wire.h>
-#include <DHT.h>
 #include <RTClib.h>
 #include <RTC_DS1307.h>
 #include <SPI.h>
